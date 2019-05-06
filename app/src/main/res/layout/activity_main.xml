@@ -72,4 +72,18 @@
         android:layout_marginBottom="85dp"
         android:text="Devices" />
 
+    <Button
+        android:id="@+id/BtnCrear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnDevices"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="124dp"
+        android:layout_marginTop="260dp"
+        android:layout_marginEnd="155dp"
+        android:layout_marginBottom="162dp"
+        android:text="Crear archivo" />
+
 </RelativeLayout>

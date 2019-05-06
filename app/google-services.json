@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "208805827224",
+    "firebase_url": "https://medpafprueba.firebaseio.com",
+    "project_id": "medpafprueba",
+    "storage_bucket": "medpafprueba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:208805827224:android:331f46ca8982ce74",
+        "android_client_info": {
+          "package_name": "com.medpaf.medpaft_app_v1a"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "208805827224-mrpgr604ohviaih9nlp1uh5770lbuvro.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.medpaf.medpaft_app_v1a",
+            "certificate_hash": "73d5e9b208dd7a8be16b5b9d99e2d00d0eeada3d"
+          }
+        },
+        {
+          "client_id": "208805827224-ju5ss9co0amsv3kgktpijbemg95si88r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLg3Mlr866KgcWCU1HmKNixSGByb5mBH0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "208805827224-ju5ss9co0amsv3kgktpijbemg95si88r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

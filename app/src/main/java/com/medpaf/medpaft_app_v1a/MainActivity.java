@@ -1,9 +1,12 @@
 package com.medpaf.medpaft_app_v1a;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,13 +16,20 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
-    Button btnON, btnOFF,btnDisconnect,btnDevices;
+    Button btnON, btnOFF,btnDisconnect,btnDevices,BtnCrear;
     TextView txtBufferIn;
 
     //-------------------------------------------
@@ -28,6 +38,11 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
     private StringBuilder DataStringIN = new StringBuilder();
+//-------------Firebase------------//
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
+
+
 
     private ConnectedThread MyConexionBT;
     // Identificador unico de servicio - SPP UUID
@@ -37,7 +52,12 @@ public class MainActivity extends AppCompatActivity {
     String dataInPrint=null;
     //-------------------------------------------
 
-
+    private String archivo="miarchivo";
+    private String carpeta = "/archivos";
+            String contenido;
+    File file;
+    String file_path="";
+    String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +67,10 @@ public class MainActivity extends AppCompatActivity {
         btnON = (Button) findViewById(R.id.btnOn);
         btnOFF = (Button) findViewById(R.id.btnOff);
         btnDevices = (Button) findViewById(R.id.btnDevices);
+        BtnCrear = (Button) findViewById(R.id.BtnCrear);
         btnDisconnect = (Button) findViewById(R.id.btnDisconnect);
         txtBufferIn = (TextView) findViewById(R.id.txtBufferIn);
+
 
         turnOn();
         turnOff();
@@ -79,6 +101,68 @@ public class MainActivity extends AppCompatActivity {
         btAdapter = BluetoothAdapter.getDefaultAdapter(); // get Bluetooth adapter
         checkBTState();
 
+        crear();
+        inicializarFirebase();
+
+    }
+
+    private void inicializarFirebase() {
+        FirebaseApp.initializeApp(this);
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
+
+
+    }
+
+    int t=1;
+
+    private void crear() {
+        BtnCrear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                t++;
+                databaseReference.child("dato").child(String.valueOf(t)).setValue("Holamundo");
+
+                /*   file_path=("/sdcard"+carpeta);
+                File localFile=new File(file_path);
+                Toast.makeText(MainActivity.this, file_path, Toast.LENGTH_SHORT).show();
+                if(!localFile.exists()){
+                    localFile.mkdirs();
+                }
+                name=(archivo+".txt");
+                Toast.makeText(MainActivity.this, "Archivo: "+file_path, Toast.LENGTH_SHORT).show();
+                file=new File(localFile,name);
+
+                try{
+                  file.createNewFile();
+                    Toast.makeText(MainActivity.this, "Se creo archivo 2", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
+
+
+
+
+
+
+               /* try{
+                    Log.d("FG", "2");
+                    File tarjetaSD = Environment.getExternalStorageDirectory();
+                    // Toast.makeText(MainActivity.this, tarjetaSD.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                    File rutaArchivo = new File("/storage/00EA-2342",nombre);
+                    OutputStreamWriter crearArchivo = new OutputStreamWriter(openFileOutput(nombre, Activity.MODE_PRIVATE));
+
+                    crearArchivo.write(contenido);
+                    crearArchivo.flush();
+                    Log.d("FG", tarjetaSD.getAbsolutePath());
+                    //Toast.makeText(MainActivity.this, "Se lleno el archivo", Toast.LENGTH_SHORT).show();
+
+                }catch (Exception ex) {
+                    // Toast.makeText(MainActivity.this, "No se creo el archivo", Toast.LENGTH_SHORT).show();
+                    Log.d("FG", "ex: " + ex);
+                }*/
+            }
+        });
     }
 
     private void moreDevices() {
@@ -121,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                {
                     try {btSocket.close();}
                     catch (IOException e)
-                    { Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();;}
+                    { Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();}
                 }
                 finish();
             }
@@ -130,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
 
     private BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException
     {
+
         //crea un conexion de salida segura para el dispositivo
         //usando el servicio UUID
         return device.createRfcommSocketToServiceRecord(BTMODULEUUID);
@@ -209,54 +294,46 @@ public class MainActivity extends AppCompatActivity {
             mmOutStream = tmpOut;
         }
 
+        public String[] datos;
+        int index=0;
+
         public void run()
         {
-            byte[] buffer = new byte[254];
+             byte[] buffer = new byte[10];
 
             int bytes;
-            int index =1;
-            for (byte device : buffer) {
-                Log.d("divicion", String.valueOf(buffer[index]));
+            Log.e("FG", "1");
 
-            }
 
 
 
             // Se mantiene en modo escucha para determinar el ingreso de datos
             while (true) {
-                boolean b=false;
-                //int c=0;
-                int ca=0;
-                boolean p2=false;
-                String[][] aux1=new String[2][2];
-               // String[] aux2=new String[2];
-                char corte='*';
-                char[] num={'0','1','2','3','4','5','6','7','8','9'};;
-
-
-
 
                 try {
                     bytes = mmInStream.read(buffer);
-                    Log.d("BX", String.valueOf(bytes));
+                   // Log.d("HG", String.valueOf(bytes));
                     String numReciv=String.valueOf(bytes);
                     char[] cifra = numReciv.toCharArray();
 
+                    Log.d("YT", String.valueOf(bytes));
                     String readMessage = new String(buffer, 0, bytes);
                     //char[] cifra = readMessage.toCharArray();
 
+                    databaseReference.child("dato").child(String.valueOf(index)).setValue(readMessage);
+                    Log.d("numeracion", "numero: "+index+" "+readMessage);
 
-                   // Log.d("divicion", print);
-
+                    Log.d("YT", readMessage);
+                        index++;
                     DataParser dataParser = new DataParser();
 
-                   //dataParser.saveToDatabase(
-                     //      dataParser.dataToItems(readMessage, "\\w([A-Z-0-9]*)"));
-
-                    Log.d("BZ", readMessage);
+                   /*dataParser.saveToDatabase(
+                           dataParser.dataToItems(readMessage, "\\w([A-Z-0-9]*)"));
+*/
+                   // Log.d("BZ", readMessage);
 
                     // Envia los datos obtenidos hacia el evento via handler
-                    bluetoothIn.obtainMessage(handlerState, bytes, -0, readMessage).sendToTarget();
+                    //bluetoothIn.obtainMessage(handlerState, bytes, -0, readMessage).sendToTarget();
                 } catch (IOException e) {
                     break;
                 }

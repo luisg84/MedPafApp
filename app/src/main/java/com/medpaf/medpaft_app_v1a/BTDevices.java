@@ -105,7 +105,7 @@ public class BTDevices extends AppCompatActivity {
 
             // Realiza un intent para iniciar la siguiente actividad
             // mientras toma un EXTRA_DEVICE_ADDRESS que es la dirección MAC.
-            Intent i = new Intent(BTDevices.this, MainActivity.class);//<-<- PARTE A MODIFICAR >->->
+            Intent i = new Intent(BTDevices.this, home.class);//<-<- PARTE A MODIFICAR >->->
             i.putExtra(EXTRA_DEVICE_ADDRESS, address);
             startActivity(i);
         }
@@ -114,7 +114,7 @@ public class BTDevices extends AppCompatActivity {
     private void BTState() {
         // Comprueba que el dispositivo tiene Bluetooth y que está encendido.
         mBtAdapter= BluetoothAdapter.getDefaultAdapter();
-        if(mBtAdapter==null) {
+            if(mBtAdapter==null) {
             Toast.makeText(getBaseContext(), "El dispositivo no soporta Bluetooth", Toast.LENGTH_SHORT).show();
         } else {
             if (mBtAdapter.isEnabled()) {
@@ -126,5 +126,10 @@ public class BTDevices extends AppCompatActivity {
 
             }
         }
+    }
+
+    public void Return(View view) {
+        Intent i = new Intent(BTDevices.this, homeT.class);
+        startActivity(i);
     }
 }

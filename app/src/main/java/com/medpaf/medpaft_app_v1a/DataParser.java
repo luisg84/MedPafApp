@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 public class DataParser {
 
     public List<Item> dataToItems(String data, String regex) {
+
         List<Item> items = new ArrayList<Item>();
         Map<String, String> map = new HashMap<>();
         Matcher m = Pattern.compile(regex)
@@ -19,6 +20,7 @@ public class DataParser {
             String value = m.group();
             map.put(value.substring(0, 1), value.substring(1, value.length()));
         }
+
         map.entrySet().forEach(position -> {
             Item item = new Item();
             item.setId(position.getKey());
@@ -30,7 +32,9 @@ public class DataParser {
     }
 
     public void saveToDatabase(List<Item> itemsToSave) {
-        itemsToSave.forEach(item -> Log.d("XI", String.valueOf(item)));
+       //itemsToSave.forEach(item -> Log.d("XI", String.valueOf(item)));
 
     }
+
+
 }
