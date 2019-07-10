@@ -114,6 +114,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void removeDatabase(){
+        databaseReference.child("dato").removeValue();
+    };
+
     int t=1;
 
     private void crear() {
@@ -192,7 +196,8 @@ public class MainActivity extends AppCompatActivity {
     private void turnOff() {
         btnOFF.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                MyConexionBT.write("0");
+                //MyConexionBT.write("0");
+                removeDatabase();
             }
         });
 

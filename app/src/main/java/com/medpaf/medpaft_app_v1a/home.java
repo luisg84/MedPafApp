@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class home extends AppCompatActivity {
@@ -56,6 +57,8 @@ public class home extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    public ArrayList<String> al = new ArrayList<String>();
+    String[] cadena;
 
     //-------------------------------------------
     Handler bluetoothIn;
@@ -100,6 +103,7 @@ public class home extends AppCompatActivity {
         edadtxt = (TextView) findViewById(R.id.edadtxt);
         pesotxt = (TextView) findViewById(R.id.pesotxt);
 
+
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -107,6 +111,8 @@ public class home extends AppCompatActivity {
 
         bluetoothIn = new Handler() {
             public void handleMessage(android.os.Message msg) {
+                int index2=0;
+
                 if (msg.what == handlerState) {
                     String readMessage = (String) msg.obj;
                     DataStringIN.append(readMessage);
@@ -115,9 +121,19 @@ public class home extends AppCompatActivity {
                     int endOfLineIndex = DataStringIN.indexOf("#");
 
                     if (endOfLineIndex > 0) {
+                        index2++;
                         String dataInPrint = DataStringIN.substring(0, endOfLineIndex);
+
                         //float dataP=Integer.parseInt(dataInPrint);
-                        Log.d("Datos Rcividos2", dataInPrint);
+                        Log.d("Datos Rcividos2  ºº", index2+" : "+dataInPrint);
+                        al.add(dataInPrint);
+
+                   if(al.size()==7){
+                        databaseReference.child("dato").child(String.valueOf(index2)).setValue(al);
+                        al.clear();
+                        Log.d("numeracion", "numero: "+index2+" "+al);
+                    }
+
                         //txtBufferIn.setText("Dato: " + dataInPrint);
                         DataStringIN.delete(0, DataStringIN.length());
                     }
@@ -221,6 +237,10 @@ public class home extends AppCompatActivity {
         }
     }
 
+    public void removeDatabase(){
+        databaseReference.child("dato").removeValue();
+    };
+
     //Crea la clase que permite crear el evento de conexion
     private class ConnectedThread extends Thread
     {
@@ -234,6 +254,7 @@ public class home extends AppCompatActivity {
             try
             {
                 tmpIn = socket.getInputStream();
+
                 tmpOut = socket.getOutputStream();
             } catch (IOException e) { }
             mmInStream = tmpIn;
@@ -266,8 +287,17 @@ public class home extends AppCompatActivity {
                     String readMessage = new String(buffer, 0, bytes);
                     //char[] cifra = readMessage.toCharArray();
 
-                    databaseReference.child("dato").child(String.valueOf(index)).setValue(readMessage);
-                    Log.d("numeracion", "numero: "+index+" "+readMessage);
+                    //String[] arrayColores = readMessage.split(",");
+                    // cadena = readMessage.split("#");
+                    al.add(readMessage);
+
+                   if(al.size()==7){
+                        databaseReference.child("dato").child(String.valueOf(index)).setValue(al);
+                        al.clear();
+                        Log.d("numeracion", "numero: "+index+" "+al);
+                    }
+
+
 
                     Log.d("YT", readMessage);
                     index++;
@@ -279,7 +309,7 @@ public class home extends AppCompatActivity {
                     // Log.d("BZ", readMessage);
 
                     // Envia los datos obtenidos hacia el evento via handler
-                    //bluetoothIn.obtainMessage(handlerState, bytes, -0, readMessage).sendToTarget();
+                    bluetoothIn.obtainMessage(handlerState, bytes, -0, readMessage).sendToTarget();
                 } catch (IOException e) {
                     break;
                 }
@@ -304,8 +334,9 @@ public class home extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(home.this, monitor.class);
+               Intent i = new Intent(home.this, monitor.class);
                 startActivity(i);
+               // removeDatabase();
             }
         });
     }

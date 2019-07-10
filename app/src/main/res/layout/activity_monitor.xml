@@ -187,7 +187,7 @@
     </RelativeLayout>
 
     <android.support.v7.widget.CardView
-        android:id="@+id/view4"
+        android:id="@+id/SendMensage"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
